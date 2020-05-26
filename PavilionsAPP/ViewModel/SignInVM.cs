@@ -1,4 +1,5 @@
 ﻿using PavilionsAPP.Model;
+using PavilionsDAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,18 @@ namespace PavilionsAPP.ViewModel
 {
     public class SignInVM : ValidateBaseViewModel, IPageViewModel
     {
-        string login;
         public string Login { get; set; }
-        public string Password { get; set; }
+        string password;
+        public string Password
+        {
+            get => password;
+            set => password = value;
+        }
         public string Kapcha { get; set; }
         public string InpKapcha { get; set; }
+        public int ChancesNum { get; set; } = 3;
+        public Visibility IsVisible { get; set; } = Visibility.Hidden;
+        bool isKap = false;
 
         public SignInVM()
         {
@@ -59,21 +67,62 @@ namespace PavilionsAPP.ViewModel
             }
         }
 
-        
-
-
-
         void SignIn(string login = "", string password = "")
         {
-            var res = FurnitureCommands.TryAutorize(login, password);
-            if (res == null)
+            if (isKap)
             {
-                MessageBox.Show("Load Next Page...");
+                if (InpKapcha == Kapcha)
+                {
+                    var res = PavilionsCommand.TryAutorize(login.ToLower(), password);
+                    if (res is Plancton)
+                    {
+                        CurrUser.user = (Plancton)res;
+
+                        MessageBox.Show("Load Next Page");
+                    }
+                    else
+                    {
+                        Error = (string)res;
+
+                        Kapcha = GenerateNewKapcha();
+                        InpKapcha = "";
+                    }
+                }
+                else
+                {
+                    Error = "Капча введена неверно!";
+
+                    Kapcha = GenerateNewKapcha();
+                    InpKapcha = "";
+                }
             }
             else
             {
-                Error = (string)res;
+                var res = PavilionsCommand.TryAutorize(login, password);
+                if (res is Plancton)
+                {
+                    CurrUser.user = (Plancton)res;
+
+                    MessageBox.Show("Load Next Page");
+                }
+                else
+                {
+                    Error = (string)res;
+
+                    if (ChancesNum > 0)
+                    {
+                        ChancesNum--;
+                    }
+                    if(ChancesNum==0)
+                    {
+                        isKap = true;
+                        IsVisible = Visibility.Visible;
+                        Kapcha = GenerateNewKapcha();
+                        InpKapcha = "";
+                    }
+                }
             }
+
         }
 
         void SignOn()
@@ -132,7 +181,7 @@ namespace PavilionsAPP.ViewModel
 
             IsEnableBtn = ErrorCollection[nameof(Login)] == null
                           && ErrorCollection[nameof(Password)] == null
-                          && ErrorCollection[nameof(InpKapcha)] == null;
+                          && (ErrorCollection[nameof(InpKapcha)] == null || !isKap);
 
             return error;
         }

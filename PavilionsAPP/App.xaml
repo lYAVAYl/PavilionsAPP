@@ -15,6 +15,9 @@
         <DataTemplate DataType="{x:Type vm:SignOnVM}">
             <v:SignOnPage />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ManagerCVM}">
+            <v:ManagerCPage />
+        </DataTemplate>
 
     </Application.Resources>
 </Application>

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PavilionsAPP.View"
+             xmlns:logic="clr-namespace:PavilionsAPP.Model"       
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -24,12 +25,18 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
+                <Button x:Name="btnSignIn" Grid.Column="0" Grid.Row="0" 
+                    Content="Назад" 
+                    HorizontalAlignment="Left" VerticalAlignment="Top" 
+                    Padding="5" FontSize="22"
+                    Command="{Binding LoadSignIn}"/>
+
                 <Label Grid.Column="0" Grid.Row="0" 
                        Content="Логин:" 
                        HorizontalAlignment="Right" VerticalAlignment="Top" 
                        FontSize="22" Margin="0"
                        />
-                
+
                 <Label Grid.Column="0" Grid.Row="1" 
                        Content="Пароль:" 
                        HorizontalAlignment="Right" VerticalAlignment="Top" 
@@ -45,43 +52,50 @@
 
                 <TextBox x:Name="inpLogin" 
                          Grid.Column="1" Grid.Row="0"
-                         Text="{Binding Path=Login}"
-                         VerticalAlignment="Center"
-                         TextWrapping="Wrap" FontSize="18"
-                         />
-                
-                <TextBox Grid.Column="1" Grid.Row="1"
-                         Text="{Binding Path=Password}"
+                         Text="{Binding Path=Login, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"  
+                         ToolTip="{Binding Path=ErrorCollection[Login]}"                
                          VerticalAlignment="Center"
                          TextWrapping="Wrap" FontSize="18"
                          />
 
-                <TextBox Grid.Column="1" Grid.Row="2"
-                         Text="{Binding Path=RepPassword}"
+                <PasswordBox Grid.Column="1" Grid.Row="1"
+                         logic:PasswordBoxAssistant.BindPassword="True"
+                         logic:PasswordBoxAssistant.BoundPassword="{Binding Path=Password1, Mode=TwoWay, 
+                                                                            ValidatesOnDataErrors=True,
+                                                                            UpdateSourceTrigger=PropertyChanged}" 
+                         ToolTip="{Binding Path=ErrorCollection[Password1]}"                
+                         FontSize="20"
                          VerticalAlignment="Center"
-                         TextWrapping="Wrap" FontSize="18"
                          />
+
+                <PasswordBox Grid.Column="1" Grid.Row="2"
+                             logic:PasswordBoxAssistant.BindPassword="True"
+                             logic:PasswordBoxAssistant.BoundPassword="{Binding Path=Password2, Mode=TwoWay, 
+                                                                                ValidatesOnDataErrors=True,
+                                                                                UpdateSourceTrigger=PropertyChanged}" 
+                             ToolTip="{Binding Path=ErrorCollection[Password2]}"                
+                             FontSize="20"
+                             VerticalAlignment="Center"
+                             />
 
                 <TextBox Grid.Column="1" Grid.Row="3"
-                         Text="{Binding Path=UserName}"
+                         Text="{Binding Path=UserName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="{Binding Path=ErrorCollection[UserName]}"             
                          VerticalAlignment="Center"
                          TextWrapping="Wrap" FontSize="18"
                          />
 
-                <TextBox Grid.Column="1" Grid.Row="1"
-                         Text="{Binding Path=Password}"
-                         VerticalAlignment="Center"
-                         TextWrapping="Wrap" FontSize="18"
-                         />
 
                 <TextBox Grid.Column="1" Grid.Row="4"
-                         Text="{Binding Path=UserSurname}"
+                         Text="{Binding Path=UserSurname, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="{Binding Path=ErrorCollection[UserSurname]}"             
                          VerticalAlignment="Center"
                          TextWrapping="Wrap" FontSize="18"
                          />
 
                 <TextBox Grid.Column="1" Grid.Row="5"
-                         Text="{Binding Path=UserLastName}"
+                         Text="{Binding Path=UserLastName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="{Binding Path=ErrorCollection[UserLastName]}"             
                          VerticalAlignment="Center"
                          TextWrapping="Wrap" FontSize="18"
                          />
@@ -90,20 +104,20 @@
                        Content="Имя:" 
                        HorizontalAlignment="Right" VerticalAlignment="Top" 
                        FontSize="22" Margin="0" />
-                
+
                 <Label Grid.Column="0" Grid.Row="4" 
                        Content="Фамилия" 
                        HorizontalAlignment="Right" VerticalAlignment="Top" 
                        FontSize="22" Margin="0" 
                        />
-                
+
                 <Label Grid.Column="0" Grid.Row="5" 
                        Content="Отчество:"
                        HorizontalAlignment="Right" VerticalAlignment="Top" 
                        FontSize="22" 
                        />
-                
-                
+
+
                 <Image x:Name="userPhoto" Grid.Column="2" Grid.RowSpan="5" 
                        HorizontalAlignment="Left" VerticalAlignment="Top"
                        Height="200" Width="200" Margin="5,0"
@@ -118,12 +132,15 @@
                         />
 
             </Grid>
-            
+
             <Button x:Name="btnRegister" 
                     Content="Зарегистрироваться" 
                     HorizontalAlignment="Center" VerticalAlignment="Center" 
                     Padding="5" FontSize="22" Margin="0,350,0,0" 
-                    Command="{Binding TryRegister}"/>
+                    Command="{Binding TrySignOn}"
+                    IsEnabled="{Binding Path=IsEnableBtn}"/>
+
+
 
 
         </Grid>
